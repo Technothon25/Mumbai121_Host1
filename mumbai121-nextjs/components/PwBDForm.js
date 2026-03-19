@@ -28,7 +28,9 @@ export default function PwBDForm() {
     consent: '', disability: '', railways: [],
   })
   const [resumeFile, setResumeFile] = useState(null)
-  const [fileName, setFileName] = useState('No file chosen')
+  const [resumeFileName, setResumeFileName] = useState('No file chosen')
+  const [certFile, setCertFile] = useState(null)
+  const [certFileName, setCertFileName] = useState('No file chosen')
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -48,6 +50,7 @@ export default function PwBDForm() {
     if (!formData.year || formData.year < 1970 || formData.year > 2030) e.year = 'Year must be between 1970 and 2030.'
     if (!formData.jobPreference)            e.jobPreference = 'Please select a core job preference.'
     if (!formData.skills.trim())            e.skills = 'Skills are required.'
+    if (!certFile)                          e.cert = 'Please upload your disability certificate in PDF format (max 5MB).'
     if (!resumeFile)                        e.resume = 'Please upload your resume in PDF format (max 5MB).'
     if (!formData.mmrResident)              e.mmrResident = 'Please select Yes or No.'
     if (!formData.consent)                  e.consent = 'Your consent is required.'
@@ -69,22 +72,40 @@ export default function PwBDForm() {
     setErrors(prev => ({ ...prev, railways: '' }))
   }
 
-  function handleFile(e) {
+  function handleResumeFile(e) {
     const file = e.target.files[0]
     if (!file) return
     if (file.type !== 'application/pdf') {
       setErrors(prev => ({ ...prev, resume: 'Only PDF files are allowed.' }))
-      setFileName('Invalid file type')
+      setResumeFileName('Invalid file type')
       return
     }
     if (file.size > 5 * 1024 * 1024) {
       setErrors(prev => ({ ...prev, resume: 'File size must be less than 5MB.' }))
-      setFileName('File too large')
+      setResumeFileName('File too large')
       return
     }
     setResumeFile(file)
-    setFileName(file.name)
+    setResumeFileName(file.name)
     setErrors(prev => ({ ...prev, resume: '' }))
+  }
+
+  function handleCertFile(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.type !== 'application/pdf') {
+      setErrors(prev => ({ ...prev, cert: 'Only PDF files are allowed.' }))
+      setCertFileName('Invalid file type')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors(prev => ({ ...prev, cert: 'File size must be less than 5MB.' }))
+      setCertFileName('File too large')
+      return
+    }
+    setCertFile(file)
+    setCertFileName(file.name)
+    setErrors(prev => ({ ...prev, cert: '' }))
   }
 
   async function handleSubmit(e) {
@@ -110,6 +131,7 @@ export default function PwBDForm() {
     fd.append('mmrResident', formData.mmrResident)
     fd.append('consent', formData.consent)
     fd.append('resume', resumeFile)
+    fd.append('disability_certificate', certFile)
 
     const xhr = new XMLHttpRequest()
     xhr.upload.addEventListener('progress', (ev) => {
@@ -222,6 +244,20 @@ export default function PwBDForm() {
           className={inputClass(errors.skills)} />
       </FormField>
 
+      {/* Disability Certificate Upload */}
+      <FormField label="Upload Disability Certificate (PDF only)" required error={errors.cert}>
+        <label className="flex items-center gap-3 border-2 border-dashed border-[#FFAC33]/50 rounded-xl p-4 cursor-pointer hover:border-[#FFAC33] transition-colors">
+          <div className="w-10 h-10 bg-[#2D3E50] rounded-full flex items-center justify-center shrink-0">
+            <i className="fas fa-upload text-[#FFAC33] text-sm"></i>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-[#2D3E50]">{certFileName}</p>
+            <p className="text-xs text-gray-400">PDF only, max 5MB</p>
+          </div>
+          <input type="file" accept=".pdf" onChange={handleCertFile} className="hidden" />
+        </label>
+      </FormField>
+
       {/* Resume Upload */}
       <FormField label="Upload Resume (PDF only)" required error={errors.resume}>
         <label className="flex items-center gap-3 border-2 border-dashed border-[#FFAC33]/50 rounded-xl p-4 cursor-pointer hover:border-[#FFAC33] transition-colors">
@@ -229,10 +265,10 @@ export default function PwBDForm() {
             <i className="fas fa-upload text-[#FFAC33] text-sm"></i>
           </div>
           <div>
-            <p className="text-sm font-medium text-[#2D3E50]">{fileName}</p>
+            <p className="text-sm font-medium text-[#2D3E50]">{resumeFileName}</p>
             <p className="text-xs text-gray-400">PDF only, max 5MB</p>
           </div>
-          <input type="file" accept=".pdf" onChange={handleFile} className="hidden" />
+          <input type="file" accept=".pdf" onChange={handleResumeFile} className="hidden" />
         </label>
       </FormField>
 
