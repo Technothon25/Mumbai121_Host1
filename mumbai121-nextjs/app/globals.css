@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #FFF9F3;
+  color: #333;
+}
+
+.ticker-animate {
+  animation: ticker-scroll 170s linear infinite;
+}
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-animate:hover {
+  animation-play-state: paused;
+}
+/* Hide Sienna footer branding */
+.asw-footer {
+  display: none !important;
+}
+/* Remove any gap between navbar and hero */
+header + * {
+  margin-top: 0 !important;
+}
+

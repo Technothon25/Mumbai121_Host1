@@ -1,0 +1,22 @@
+{
+  "name": "Mumbai121",
+  "short_name": "Mumbai121",
+  "description": "Connecting freshers and PwBD with startups in Mumbai",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF9F3",
+  "theme_color": "#FFAC33",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
