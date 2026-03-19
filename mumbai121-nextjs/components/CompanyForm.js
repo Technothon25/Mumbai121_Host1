@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-const BACKEND = 'http://localhost:8000'
+const BACKEND = 'http://localhost:5000'
 
 const jobOptions = [
   'IT Engineer', 'Non-IT Engineer', 'Sales And Marketing',
@@ -13,9 +13,9 @@ const railwayOptions = ['Central', 'Harbour', 'Western']
 export default function CompanyForm() {
   const [formData, setFormData] = useState({
     company: '', contactPerson: '', email: '', whatsapp: '',
-    turnover: '', employees: '', product: '', workDescription: '',
+    turnover: '', employees: '', product: '', workType: '',
     salary: '', location: '', website: '',
-    jobPreference: '', consent: '', railways: [],
+    jobType: '', consent: '', railways: [],
   })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
@@ -33,10 +33,10 @@ export default function CompanyForm() {
     if (!formData.turnover.trim())      e.turnover = 'Annual turnover is required.'
     if (!formData.employees)            e.employees = 'Total employees is required.'
     if (!formData.product.trim())       e.product = 'Product / Service is required.'
-    if (!formData.workDescription.trim())      e.workDescription = 'Work description is required.'
+    if (!formData.workType.trim())      e.workType = 'Work description is required.'
     if (!formData.salary)               e.salary = 'Salary is required.'
     if (!formData.location.trim())      e.location = 'Job location is required.'
-    if (!formData.jobPreference)              e.jobPreference = 'Please select a core job preference.'
+    if (!formData.jobType)              e.jobType = 'Please select a core job preference.'
     if (!formData.consent)              e.consent = 'Your consent is required.'
     return e
   }
@@ -148,11 +148,11 @@ export default function CompanyForm() {
       </FormField>
 
       {/* Core Job Preference */}
-      <FormField label="Core Job Preference" required error={errors.jobPreference}>
+      <FormField label="Core Job Preference" required error={errors.jobType}>
         {jobOptions.map(opt => (
           <label key={opt} className="flex items-center gap-3 p-3 rounded-lg hover:bg-[#FFAC33]/10 cursor-pointer">
-            <input type="radio" name="jobPreference" value={opt}
-              checked={formData.jobPreference === opt}
+            <input type="radio" name="jobType" value={opt}
+              checked={formData.jobType === opt}
               onChange={handleInput} className="w-5 h-5 accent-[#2D3E50]" />
             <span className="text-gray-700 text-sm">{opt}</span>
           </label>
@@ -160,9 +160,9 @@ export default function CompanyForm() {
       </FormField>
 
       {/* Work Description */}
-      <FormField label="Work Description" required error={errors.workDescription}>
-        <input name="workDescription" value={formData.workDescription} onChange={handleInput}
-          placeholder="Describe the work" className={inputClass(errors.workDescription)} />
+      <FormField label="Work Description" required error={errors.workType}>
+        <input name="workType" value={formData.workType} onChange={handleInput}
+          placeholder="Describe the work" className={inputClass(errors.workType)} />
       </FormField>
 
       {/* Salary */}

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-const BACKEND = 'http://localhost:8000'
+const BACKEND = 'http://localhost:5000'
 
 const whoOptions = [
   { value: 'Fresher', label: 'Jobseeker (Fresher Candidate)' },

@@ -22,8 +22,6 @@ const STATIC_COMPANIES = [
 export default function CompaniesShowcase() {
   const [isVisible, setIsVisible] = useState(false)
   const [companies, setCompanies] = useState(STATIC_COMPANIES)
-  const [companyCount, setCompanyCount] = useState('...')
-  const [candidateCount, setCandidateCount] = useState('...')
   const ref = useRef(null)
 
   // Intersection observer for scroll animation
@@ -39,18 +37,7 @@ export default function CompaniesShowcase() {
   // Fetch from MongoDB API if enabled
   useEffect(() => {
     if (!FETCH_FROM_DB) return
-    fetch('http://localhost:8000/stats')
-      .then(res => res.json())
-      .then(data => {
-        setCompanyCount((data.companies || 0) + '+')
-        setCandidateCount(((data.freshers || 0) + (data.pwbd || 0)) + '+')
-      })
-      .catch(() => {
-        setCompanyCount('50+')
-        setCandidateCount('200+')
-      })
-
-    fetch('http://localhost:8000/companies')
+    fetch('/api/companies')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
@@ -124,8 +111,8 @@ export default function CompaniesShowcase() {
         {/* Bottom Stats */}
         <div className={`mt-12 grid grid-cols-3 gap-4 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
           {[
-            { number: companyCount, label: 'Companies Registered', icon: 'fa-building' },
-            { number: candidateCount, label: 'Total Candidates', icon: 'fa-users' },
+            { number: '50+', label: 'Companies Registered', icon: 'fa-building' },
+            { number: '200+', label: 'Jobs Posted', icon: 'fa-briefcase' },
             { number: '100%', label: 'Free for Everyone', icon: 'fa-heart' },
           ].map((stat, i) => (
             <div key={i} className="bg-[#2D3E50] rounded-2xl p-6 text-center text-white">

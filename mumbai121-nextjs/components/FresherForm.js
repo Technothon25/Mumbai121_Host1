@@ -1,8 +1,8 @@
 'use client'
 import { useState, useRef } from 'react'
 
-
-const BACKEND_RESUME = 'http://localhost:8000'
+const BACKEND = 'http://localhost:5000'
+const BACKEND_RESUME = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const jobOptions = [
   'IT Engineer', 'Non-IT Engineer', 'Sales And Marketing',
