@@ -52,7 +52,7 @@ export default function CompaniesShowcase() {
   // Fetch from MongoDB API if enabled
   useEffect(() => {
     if (!FETCH_FROM_DB) return
-    fetch('http://localhost:8000/companies')
+    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/companies')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
