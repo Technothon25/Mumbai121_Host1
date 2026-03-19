@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 
-const BACKEND = 'http://localhost:5000'
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
 const whoOptions = [
   { value: 'Fresher', label: 'Jobseeker (Fresher Candidate)' },
