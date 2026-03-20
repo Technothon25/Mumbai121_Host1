@@ -3,6 +3,30 @@ import { useState } from 'react'
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
+// Valid email domains whitelist
+const VALID_DOMAINS = [
+  'gmail.com', 'yahoo.com', 'yahoo.in', 'yahoo.co.in',
+  'outlook.com', 'outlook.in', 'hotmail.com', 'hotmail.in',
+  'live.com', 'icloud.com', 'me.com', 'mac.com',
+  'rediffmail.com', 'protonmail.com', 'proton.me',
+  'zoho.com', 'zohomail.com',
+]
+
+function isValidEmail(email) {
+  if (!email || !/\S+@\S+\.\S+/.test(email)) return false
+  const domain = email.split('@')[1]?.toLowerCase()
+  if (!domain) return false
+  // Allow company/edu domains (contain dots like company.com, college.edu.in)
+  // Only block clearly fake/invalid ones
+  const blocked = ['ymail.com', 'mailinator.com', 'tempmail.com', 'throwaway.email',
+    'guerrillamail.com', 'sharklasers.com', 'guerrillamailblock.com', 'grr.la',
+    'guerrillamail.info', 'spam4.me', 'trashmail.com', 'dispostable.com',
+    'fakeinbox.com', 'maildrop.cc', 'yopmail.com', 'temp-mail.org',
+    'getairmail.com', 'filzmail.com', 'discard.email', 'spamgourmet.com']
+  if (blocked.includes(domain)) return false
+  return true
+}
+
 const whoOptions = [
   { value: 'Fresher', label: 'Jobseeker (Fresher Candidate)' },
   { value: 'PwBD', label: 'Jobseeker (PwBD Candidate)' },
@@ -24,7 +48,7 @@ export default function ContactForm() {
     const e = {}
     if (!formData.who)                  e.who = 'Please select who you are.'
     if (!formData.name.trim())          e.name = 'Full name is required.'
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) e.email = 'Enter a valid email address.'
+    if (!isValidEmail(formData.email)) e.email = 'Please enter a valid email address from a real email provider (e.g. Gmail, Yahoo, Outlook).'
     if (!whatsappRegex.test(formData.whatsapp)) e.whatsapp = 'Enter a valid 10-digit WhatsApp number.'
     if (!formData.message.trim())       e.message = 'Please enter your message.'
     if (!formData.consent)              e.consent = 'Your consent is required.'
