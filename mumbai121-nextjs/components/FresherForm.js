@@ -34,6 +34,8 @@ const jobOptions = [
 ]
 
 export default function FresherForm() {
+  const formRef = useRef(null)
+
   const [formData, setFormData] = useState({
     fullName: '', email: '', whatsapp: '',
     college: '', course: '', year: '',
@@ -57,7 +59,7 @@ export default function FresherForm() {
     if (formData.railwayPreference.length === 0) e.railway = 'Please select at least one railway line.'
     if (!formData.college.trim())            e.college = 'College name is required.'
     if (!formData.course.trim())             e.course = 'Course is required.'
-    if (!formData.year || formData.year < 1970 || formData.year > 2030) e.year = 'Year must be between 1970 and 2030.'
+    if (!formData.year || formData.year < 1970 || formData.year > new Date().getFullYear()) e.year = `Year must be between 1970 and ${new Date().getFullYear()}.`
     if (!formData.jobPreference)             e.jobPreference = 'Please select a core job preference.'
     if (!formData.skills.trim())             e.skills = 'Skills are required.'
     if (!resumeFile)                         e.resume = 'Please upload your resume in PDF format (max 5MB).'
@@ -104,6 +106,11 @@ export default function FresherForm() {
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
+      // Scroll to first error field
+      setTimeout(() => {
+        const firstError = formRef.current?.querySelector('[data-error="true"]')
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 50)
       return
     }
     setUploading(true)
@@ -152,7 +159,7 @@ export default function FresherForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-5">
 
       {/* Full Name */}
       <FormField label="Full Name" required error={errors.fullName}>
@@ -278,7 +285,7 @@ export default function FresherForm() {
 
 function FormField({ label, required, error, children }) {
   return (
-    <div className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
+    <div data-error={!!error} className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
       <label className="block text-sm font-medium text-[#3c4043] mb-3">
         {label} {required && <span className="text-red-500">*</span>}
       </label>

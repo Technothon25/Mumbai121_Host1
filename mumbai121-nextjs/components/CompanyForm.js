@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -35,6 +35,8 @@ const jobOptions = [
 const railwayOptions = ['Central', 'Harbour', 'Western']
 
 export default function CompanyForm() {
+  const formRef = useRef(null)
+
   const [formData, setFormData] = useState({
     company: '', contactPerson: '', email: '', whatsapp: '',
     turnover: '', employees: '', product: '', workType: '',
@@ -85,6 +87,10 @@ export default function CompanyForm() {
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
+      setTimeout(() => {
+        const firstError = formRef.current?.querySelector('[data-error="true"]')
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 50)
       return
     }
     setLoading(true)
@@ -115,7 +121,7 @@ export default function CompanyForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-5">
 
       {/* Company Name */}
       <FormField label="Company Name" required error={errors.company}>
@@ -230,7 +236,7 @@ export default function CompanyForm() {
 
 function FormField({ label, required, error, children }) {
   return (
-    <div className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
+    <div data-error={!!error} className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
       <label className="block text-sm font-medium text-[#3c4043] mb-3">
         {label} {required && <span className="text-red-500">*</span>}
       </label>

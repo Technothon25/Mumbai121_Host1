@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -39,6 +39,8 @@ const disabilityOptions = [
 const railwayOptions = ['Central', 'Harbour', 'Western', 'Work From Home']
 
 export default function VolunteerForm() {
+  const formRef = useRef(null)
+
   const [formData, setFormData] = useState({
     name: '', email: '', whatsapp: '',
     college: '', course: '', year: '',
@@ -61,7 +63,7 @@ export default function VolunteerForm() {
     if (!formData.skills.trim())        e.skills = 'Skills are required.'
     if (!formData.college.trim())       e.college = 'College name is required.'
     if (!formData.course.trim())        e.course = 'Course is required.'
-    if (!formData.year || formData.year < 1970 || formData.year > 2030) e.year = 'Year must be between 1970 and 2030.'
+    if (!formData.year || formData.year < 1970 || formData.year > new Date().getFullYear()) e.year = `Year must be between 1970 and ${new Date().getFullYear()}.`
     if (!formData.mmr)                  e.mmr = 'Please select Yes or No.'
     if (!formData.consent)              e.consent = 'Your consent is required.'
     return e
@@ -87,6 +89,11 @@ export default function VolunteerForm() {
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
+      // Scroll to first error field
+      setTimeout(() => {
+        const firstError = formRef.current?.querySelector('[data-error="true"]')
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 50)
       return
     }
     setLoading(true)
@@ -117,7 +124,7 @@ export default function VolunteerForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-5">
 
       {/* Full Name */}
       <FormField label="Full Name" required error={errors.name}>
@@ -223,7 +230,7 @@ export default function VolunteerForm() {
 
 function FormField({ label, required, error, children }) {
   return (
-    <div className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
+    <div data-error={!!error} className={`bg-[#faf9f7] rounded-xl p-5 border ${error ? 'border-red-300' : 'border-[#e8e8e8]'}`}>
       <label className="block text-sm font-medium text-[#3c4043] mb-3">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
