@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 const FETCH_FROM_DB = true
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_URL || ''
 
 // Static fallback list (same as original — used when DB fetch is off or fails)
 const STATIC_COMPANIES = [
@@ -38,9 +39,8 @@ export default function CompaniesShowcase() {
 
   // Fetch live stats from backend
   useEffect(() => {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL
-    if (!url) return
-    fetch(url + '/stats')
+    if (!BACKEND) return
+    fetch(`${BACKEND}/stats`)
       .then(res => res.json())
       .then(data => {
         setCompanyCount((data.companies || 0) + '+')
@@ -52,7 +52,8 @@ export default function CompaniesShowcase() {
   // Fetch from MongoDB API if enabled
   useEffect(() => {
     if (!FETCH_FROM_DB) return
-    fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/companies')
+    if (!BACKEND) return
+    fetch(`${BACKEND}/companies`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data) && data.length > 0) {
